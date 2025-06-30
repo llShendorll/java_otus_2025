@@ -1,0 +1,1 @@
+rootProject.name = "java_otus_2025"

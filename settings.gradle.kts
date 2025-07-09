@@ -22,3 +22,5 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
+
+include("hw04-generics")

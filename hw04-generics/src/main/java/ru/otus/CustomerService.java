@@ -7,7 +7,6 @@ import java.util.TreeMap;
 public class CustomerService {
 
     public TreeMap<Customer, String> map = new TreeMap<>(Comparator.comparingLong(Customer::getScores));
-    public TreeMap<Customer, String> copyMap = new TreeMap<>(Comparator.comparingLong(Customer::getScores));
 
     public Map.Entry<Customer, String> getSmallest() {
         Map.Entry<Customer, String> entry = map.firstEntry();
@@ -27,8 +26,6 @@ public class CustomerService {
     }
 
     public void add(Customer customer, String data) {
-        Customer copy = new Customer(customer.getId(), customer.getName(), customer.getScores());
         map.put(customer, data);
-        copyMap.put(copy, data);
     }
 }

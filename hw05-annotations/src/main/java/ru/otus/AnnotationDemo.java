@@ -14,6 +14,12 @@ public class AnnotationDemo {
     }
 
     @Test
+    public void testFailure() {
+        System.out.println("Running failing test");
+        throw new RuntimeException("Failing test");
+    }
+
+    @Test
     public void test2() {
         System.out.println("test2");
     }

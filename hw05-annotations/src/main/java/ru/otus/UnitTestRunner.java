@@ -19,15 +19,21 @@ public class UnitTestRunner {
         passedTests = 0;
         failedTests = 0;
 
-        Method[] testMethods = getMethodsWithAnnotation(testClass);
+        Method[] testMethods = getMethodsWithAnnotation(testClass, Test.class);
+        Method[] beforeMethods = getMethodsWithAnnotation(testClass, Before.class);
+        Method[] afterMethods = getMethodsWithAnnotation(testClass, After.class);
         totalTests = testMethods.length;
 
         for (Method testMethod : testMethods) {
             try {
                 Object instance = testClass.getDeclaredConstructor().newInstance();
-                runMethodsWithAnnotation(instance, Before.class);
-                runTestMethod(instance, testMethod);
-                runMethodsWithAnnotation(instance, After.class);
+                if (runMethods(instance, beforeMethods)) {
+                    runTestMethod(instance, testMethod);
+                } else {
+                    log.info("Тест " + testMethod.getName() + " не пройден - @Before method failed");
+                    failedTests++;
+                }
+                runMethods(instance, afterMethods);
             } catch (Exception e) {
                 log.info("Не удалось создать экземпляр класса " + testClass.getName() + " - " + e.getMessage());
                 failedTests++;
@@ -37,26 +43,27 @@ public class UnitTestRunner {
         printTestStatistics();
     }
 
-    private Method[] getMethodsWithAnnotation(Class<?> testClass) {
+    private Method[] getMethodsWithAnnotation(Class<?> testClass, Class<? extends Annotation> annotationClass) {
         try {
             return Arrays.stream(testClass.getMethods())
-                    .filter(method -> method.isAnnotationPresent(Test.class))
+                    .filter(method -> method.isAnnotationPresent(annotationClass))
                     .toArray(Method[]::new);
         } catch (SecurityException e) {
             return new Method[0];
         }
     }
 
-    private void runMethodsWithAnnotation(Object instance, Class<? extends Annotation> annotationClass) {
-        for (Method method : instance.getClass().getMethods()) {
-            if (method.isAnnotationPresent(annotationClass)) {
-                try {
-                    method.invoke(instance);
-                } catch (Exception e) {
-                    log.info("Метод " + method.getName() + " не выполнен - " + e.getMessage());
-                }
+    private boolean runMethods(Object instance, Method[] methods) {
+        boolean passed = true;
+        for (Method method : methods) {
+            try {
+                method.invoke(instance);
+            } catch (Exception e) {
+                log.info("Метод " + method.getName() + " не выполнен - " + e.getMessage());
+                passed = false;
             }
         }
+        return passed;
     }
 
     private void runTestMethod(Object instance, Method method) {

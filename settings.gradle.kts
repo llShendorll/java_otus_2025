@@ -25,3 +25,4 @@ pluginManagement {
 
 include("hw04-generics")
 include("hw05-annotations")
+include("hw06-gc")

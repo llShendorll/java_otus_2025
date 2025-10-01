@@ -31,17 +31,20 @@ public class ATM implements ATMInterface {
     @Override
     public void withdraw(int amount) {
         if (amount <= 0) {
-            throw new ATMException("Сумма должна быть положительной");
+            throw new ATMException("Сумма должна быть положительной: " + amount);
         }
 
         if (amount > getBalance()) {
-            throw new ATMException("Недостаточно средств в банкомате");
+            throw new ATMException(String.format(
+                    "Недостаточно средств в банкомате. Запрошено: %d руб., доступно: %d руб.", amount, getBalance()));
         }
 
         Map<Banknote, Integer> banknotes = calculateBanknotes(amount);
 
         if (banknotes == null) {
-            throw new ATMException("Невозможно выдать запрошенную сумму имеющимися банкнотами");
+            throw new ATMException(String.format(
+                    "Невозможно выдать запрошенную сумму - %d руб. имеющимися банкнотами. " + "Попробуйте другую сумму.",
+                    amount));
         }
 
         for (Map.Entry<Banknote, Integer> entry : banknotes.entrySet()) {

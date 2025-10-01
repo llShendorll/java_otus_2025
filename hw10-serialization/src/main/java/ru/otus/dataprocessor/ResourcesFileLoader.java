@@ -1,9 +1,8 @@
 package ru.otus.dataprocessor;
 
-import ru.otus.model.Measurement;
-
 import java.util.Collections;
 import java.util.List;
+import ru.otus.model.Measurement;
 
 public class ResourcesFileLoader implements Loader {
 

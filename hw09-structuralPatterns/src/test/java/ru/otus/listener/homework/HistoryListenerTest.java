@@ -1,4 +1,4 @@
-package ru.otus.homework;
+package ru.otus.listener.homework;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
